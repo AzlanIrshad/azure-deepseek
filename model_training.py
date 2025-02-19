@@ -7,12 +7,18 @@ from datasets import Dataset
 model_name = "deepseek-ai/DeepSeek-R1"
 tokenizer = AutoTokenizer.from_pretrained(model_name)
 
+# Load model without applying classification head directly
 try:
     model = AutoModel.from_pretrained(model_name)
+    print("Model loaded successfully.")
 except Exception as e:
     print(f"Error loading model: {e}")
-    # Handle the case where the model does not directly support AutoModel
-    # or consider using a custom model class.
+    model = None
+
+# Check if model is loaded
+if model is None:
+    raise ValueError("Model failed to load. Please check the model name and your connection.")
+
 
 # Load preprocessed data
 df = pd.read_csv("stock_data.csv")

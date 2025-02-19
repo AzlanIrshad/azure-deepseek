@@ -1,4 +1,4 @@
-from transformers import AutoModel, AutoTokenizer, Trainer, TrainingArguments
+from transformers import AutoModelForSequenceClassification, AutoTokenizer, Trainer, TrainingArguments
 import torch
 import pandas as pd
 from datasets import Dataset
@@ -9,7 +9,7 @@ tokenizer = AutoTokenizer.from_pretrained(model_name)
 
 # Load model without applying classification head directly
 try:
-    model = AutoModel.from_pretrained(model_name)
+    model = AutoModelForSequenceClassification.from_pretrained(model_name, num_labels=2)
     print("Model loaded successfully.")
 except Exception as e:
     print(f"Error loading model: {e}")

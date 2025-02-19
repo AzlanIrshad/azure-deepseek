@@ -7,6 +7,7 @@ from datasets import Dataset
 model_name = "deepseek-ai/DeepSeek-R1"
 tokenizer = AutoTokenizer.from_pretrained(model_name)
 model = AutoModel.from_pretrained(model_name, num_labels=2)
+quantization_type = "bitsandbytes_8bit"
 
 # Load preprocessed data
 df = pd.read_csv("stock_data.csv")

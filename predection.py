@@ -1,21 +1,54 @@
 from transformers import AutoModelForSequenceClassification, AutoTokenizer
 import torch
+import pandas as pd
+from datasets import Dataset
 
-# Load trained model and tokenizer
-model_path = "deepseek-ai/DeepSeek-R1"
-token = 'LAPY27ZYQ3UXD9N7'
-tokenizer = AutoTokenizer.from_pretrained(model_path, token=token)
-model = AutoModelForSequenceClassification.from_pretrained(model_path)
+# Load the trained model and tokenizer
+model_name = "deepseek_stock_model"  # Path to the saved model
+tokenizer = AutoTokenizer.from_pretrained(model_name)
+model = AutoModelForSequenceClassification.from_pretrained(model_name)
 
-# Predict function
-def predict_stock_movement(stock_text):
-    inputs = tokenizer(stock_text, return_tensors="pt", truncation=True, padding="max_length", max_length=128)
+# Move model to GPU if available
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+model.to(device)
+
+# Load some new data for testing (example stock data)
+new_data = pd.DataFrame({
+    "Open": [150.25, 200.75],  # Example stock opening prices
+    "Close": [155.50, 205.60],  # Example stock closing prices
+    "Price Change %": [3.50, 2.45],  # Example price change percentages
+})
+
+# Convert data into text format for prediction
+def format_data_for_prediction(df):
+    return [
+        f"Stock: AAPL, Open: {row.Open}, Close: {row.Close}, Change: {row['Price Change %']:.2f}"
+        for _, row in df.iterrows()
+    ]
+
+# Format the new data
+formatted_data = format_data_for_prediction(new_data)
+
+# Tokenize the new data
+inputs = tokenizer(formatted_data, padding=True, truncation=True, return_tensors="pt", max_length=128)
+
+# Move inputs to the same device as model
+inputs = {key: value.to(device) for key, value in inputs.items()}
+
+# Get model predictions
+with torch.no_grad():  # Disable gradient calculation for inference
+    model.eval()  # Set model to evaluation mode
     outputs = model(**inputs)
-    probs = torch.nn.functional.softmax(outputs.logits, dim=-1)
-    return "Up" if probs[0][1] > probs[0][0] else "Down"
 
-# Test example
-if __name__ == "__main__":
-    test_text = "Stock: AAPL, Open: 185.3, Close: 186.5, Change: 0.65"
-    prediction = predict_stock_movement(test_text)
-    print(f"Predicted Movement: {prediction}")
+# Get predictions (using argmax for classification)
+predictions = torch.argmax(outputs.logits, dim=-1)
+
+# Print the predictions (0 or 1)
+print("Predictions:", predictions)
+
+# Map predictions to actual labels (if necessary)
+# Assuming 0 = "Down" and 1 = "Up" for stock prediction
+labels = ["Down", "Up"]
+predicted_labels = [labels[pred] for pred in predictions]
+
+print("Predicted stock movements:", predicted_labels)

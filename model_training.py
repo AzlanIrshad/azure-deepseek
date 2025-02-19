@@ -7,7 +7,7 @@ from datasets import Dataset
 model_name = "deepseek-ai/DeepSeek-R1"
 tokenizer = AutoTokenizer.from_pretrained(model_name)
 model = AutoModel.from_pretrained(model_name, num_labels=2)
-model.config.quantization = None  # Disable FP8 quantization
+model.config.quantization = "None"  # Disable FP8 quantization
 print(model.config)  # Check the loaded configuration for any quantization settings
 # Load preprocessed data
 df = pd.read_csv("stock_data.csv")

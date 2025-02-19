@@ -1,4 +1,4 @@
-from transformers import AutoModelForSequenceClassification, AutoTokenizer, Trainer, TrainingArguments
+from transformers import AutoModel, AutoTokenizer, Trainer, TrainingArguments
 import torch
 import pandas as pd
 from datasets import Dataset
@@ -6,7 +6,7 @@ from datasets import Dataset
 # Load DeepSeek model and tokenizer
 model_name = "deepseek-ai/DeepSeek-R1"
 tokenizer = AutoTokenizer.from_pretrained(model_name)
-model = AutoModelForSequenceClassification.from_pretrained(model_name, num_labels=2)
+model = AutoModel.from_pretrained(model_name, num_labels=2)
 model.config.quantization = None  # Disable FP8 quantization
 print(model.config)  # Check the loaded configuration for any quantization settings
 # Load preprocessed data

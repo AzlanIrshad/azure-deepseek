@@ -13,6 +13,9 @@ try:
     print("DeepSeek Model loaded successfully.")
 except Exception as e:
     print(f"Error loading model: {e}")
+    
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+model.to(device)
 
 # Check if model is loaded
 if model is None:

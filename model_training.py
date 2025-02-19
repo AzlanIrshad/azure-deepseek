@@ -1,4 +1,4 @@
-from transformers import AutoModelForSequenceClassification, AutoTokenizer, Trainer, TrainingArguments
+from transformers import LlamaConfig, LlamaForSequenceClassification, AutoTokenizer, Trainer, TrainingArguments
 import torch
 import pandas as pd
 from datasets import Dataset
@@ -7,14 +7,18 @@ from datasets import Dataset
 model_name = "deepseek-ai/DeepSeek-R1"
 tokenizer = AutoTokenizer.from_pretrained(model_name)
 
-# Load model without applying classification head directly
-model = AutoModelForSequenceClassification.from_pretrained(model_name, num_labels=2)
+# Define configuration for Llama
+config = LlamaConfig.from_pretrained(model_name, num_labels=2)
 
+# Load the model
+model = LlamaForSequenceClassification.from_pretrained(model_name, config=config)
+
+# Move model to GPU if available
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 model.to(device)
 
+# Check if the model is loaded correctly
 print(model)
-
 # Check if model is loaded
 if model is None:
     raise ValueError("Model failed to load. Please check the model name and your connection.")

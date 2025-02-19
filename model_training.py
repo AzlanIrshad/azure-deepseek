@@ -1,17 +1,12 @@
-from transformers import LlamaConfig, LlamaForSequenceClassification, AutoTokenizer, Trainer, TrainingArguments
+from transformers import AutoModelForSequenceClassification, AutoTokenizer, Trainer, TrainingArguments
 import torch
 import pandas as pd
 from datasets import Dataset
 
 # Load DeepSeek model and tokenizer
-model_name = "deepseek-ai/DeepSeek-R1"
+model_name = "bert-base-uncased"
 tokenizer = AutoTokenizer.from_pretrained(model_name)
-
-# Define configuration for Llama
-config = LlamaConfig.from_pretrained(model_name, num_labels=2)
-
-# Load the model
-model = LlamaForSequenceClassification.from_pretrained(model_name, config=config)
+model = AutoModelForSequenceClassification.from_pretrained(model_name, num_labels=2)  # Modify for classification
 
 # Move model to GPU if available
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")

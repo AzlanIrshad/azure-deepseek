@@ -1,4 +1,4 @@
-from transformers import AutoModel, AutoTokenizer, Trainer, TrainingArguments
+from transformers import AutoModelForSequenceClassification, AutoTokenizer, Trainer, TrainingArguments
 import torch
 import pandas as pd
 from datasets import Dataset
@@ -8,14 +8,12 @@ model_name = "deepseek-ai/DeepSeek-R1"
 tokenizer = AutoTokenizer.from_pretrained(model_name)
 
 # Load model without applying classification head directly
-try:
-    model = AutoModel.from_pretrained(model_name)
-    print("DeepSeek Model loaded successfully.")
-except Exception as e:
-    print(f"Error loading model: {e}")
-    
+model = AutoModelForSequenceClassification.from_pretrained(model_name, num_labels=2)
+
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 model.to(device)
+
+print(model)
 
 # Check if model is loaded
 if model is None:

@@ -4,7 +4,7 @@ import pandas as pd
 from datasets import Dataset
 
 # Load DeepSeek model and tokenizer
-model_name = "deepseek-ai/DeepSeek-R1"
+model_name = "bert-base-uncased"
 tokenizer = AutoTokenizer.from_pretrained(model_name)
 
 # Load model without applying classification head directly

@@ -6,8 +6,8 @@ from datasets import Dataset
 # Load DeepSeek model and tokenizer
 model_name = "deepseek-ai/DeepSeek-R1"
 tokenizer = AutoTokenizer.from_pretrained(model_name)
-model = AutoModel.from_pretrained(model_name, num_labels=2, config = {"quantization": "bitsandbytes_4bit"})
-
+model = AutoModel.from_pretrained(model_name, num_labels=2)
+print(model.config)  # Check the loaded configuration for any quantization settings
 # Load preprocessed data
 df = pd.read_csv("stock_data.csv")
 

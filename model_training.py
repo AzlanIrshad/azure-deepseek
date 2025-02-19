@@ -6,9 +6,14 @@ from datasets import Dataset
 # Load DeepSeek model and tokenizer
 model_name = "deepseek-ai/DeepSeek-R1"
 tokenizer = AutoTokenizer.from_pretrained(model_name)
-model = AutoModel.from_pretrained(model_name, num_labels=2)
-model.config.quantization = "None"  # Disable FP8 quantization
-print(model.config)  # Check the loaded configuration for any quantization settings
+
+try:
+    model = AutoModel.from_pretrained(model_name)
+except Exception as e:
+    print(f"Error loading model: {e}")
+    # Handle the case where the model does not directly support AutoModel
+    # or consider using a custom model class.
+
 # Load preprocessed data
 df = pd.read_csv("stock_data.csv")
 
